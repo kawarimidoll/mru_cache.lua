@@ -7,6 +7,15 @@ local opts = {
   ignore_regex_list = {}
 }
 
+--- Returns the path to cache.
+---@param type string `mru` or `mrw`
+M.cache_path = function(type)
+  if type == 'mru' or type == 'mrw' then
+    return string.gsub(opts.cache_directory, '/$', '') .. '/' .. type
+  end
+  error("type must be 'mru' or 'mrw'")
+end
+
 M.setup = function(user_opts)
   user_opts = user_opts or {}
   for k, _ in pairs(opts) do
