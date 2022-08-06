@@ -24,6 +24,17 @@ M.setup = function(user_opts)
     end
   end
 
+  -- ensure cache files
+  if vim.fn.isdirectory(opts.cache_directory) == 0 then
+    vim.fn.mkdir(opts.cache_director, 'p')
+  end
+  if vim.fn.filewritable(M.cache_path('mru')) == 0 then
+    io.popen('echo > ' .. M.cache_path('mru'))
+  end
+  if vim.fn.filewritable(M.cache_path('mrw')) == 0 then
+    io.popen('echo > ' .. M.cache_path('mrw'))
+  end
+
   vim.pretty_print(opts)
 end
 
