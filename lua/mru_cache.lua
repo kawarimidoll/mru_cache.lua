@@ -34,6 +34,22 @@ local is_ignored = function(path)
   return false
 end
 
+--- Appends given path to the cache file.
+---@param path string file path to cache
+---@param type string `mru` or `mrw`
+M.append = function(path, type)
+  if is_ignored(path) then
+    return
+  end
+
+  local cache_path = M.cache_path(type)
+  local limit = opts.max_size - 1
+  local cmd = "sed -i '\\|^" .. path .. "$|d' " .. cache_path
+      .. " && sed -i '" .. limit .. ",$d' " .. cache_path
+      .. " && sed -i '1i" .. path .. "' " .. cache_path
+  io.popen(cmd)
+end
+
 M.setup = function(user_opts)
   user_opts = user_opts or {}
   for k, _ in pairs(opts) do
