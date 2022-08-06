@@ -70,6 +70,21 @@ M.setup = function(user_opts)
   end
 
   vim.pretty_print(opts)
+
+  local augroup = 'mru_cache'
+  vim.api.nvim_create_augroup(augroup, {})
+  vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+    group = augroup, pattern = '*',
+    callback = function(args)
+      M.append(args.match, 'mru')
+    end
+  })
+  vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
+    group = augroup, pattern = '*',
+    callback = function(args)
+      M.append(args.match, 'mrw')
+    end
+  })
 end
 
 return M
