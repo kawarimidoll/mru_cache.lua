@@ -16,6 +16,24 @@ M.cache_path = function(type)
   error("type must be 'mru' or 'mrw'")
 end
 
+local is_ignored = function(path)
+  if vim.fn.filereadable(path) == 0 then
+    return true
+  end
+
+  if vim.tbl_contains(opts.ignore_filetype_list, vim.bo.filetype) then
+    return true
+  end
+
+  for _, regex in ipairs(opts.ignore_regex_list) do
+    if string.match(path, regex) then
+      return true
+    end
+  end
+
+  return false
+end
+
 M.setup = function(user_opts)
   user_opts = user_opts or {}
   for k, _ in pairs(opts) do
