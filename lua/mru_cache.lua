@@ -28,7 +28,7 @@ M.cache_path = function(type)
 end
 
 local is_called_from_autocmd = function()
-  return vim.fn.bufnr() == expand('<abuf>')
+  return vim.fn.bufnr() == tonumber(expand('<abuf>'))
 end
 
 local is_ignored = function(path)
