@@ -108,6 +108,9 @@ M.setup = function(user_opts)
       M.append(args.match, 'mrw')
     end
   })
+
+  -- append current file to mru
+  M.append(vim.api.nvim_buf_get_name(0), 'mru')
 end
 
 return M
