@@ -15,7 +15,7 @@ local opt_types = {
 
 local expand = function(expr)
   ---@diagnostic disable-next-line: missing-parameter
-  return vim.fn.expand(expr)
+  return vim.fn.expand(expr) or ''
 end
 
 --- Returns the path to cache.
@@ -54,6 +54,11 @@ end
 ---@param path string file path to cache
 ---@param type string `mru` or `mrw`
 M.append = function(path, type)
+  path = expand(path)
+  if string.sub(path, 1, 1) ~= '/' then
+    path = vim.fn.getcwd() .. '/' .. path
+  end
+
   if is_ignored(path) then
     return
   end
