@@ -64,9 +64,8 @@ M.append = function(path, type)
   end
 
   local cache_path = M.cache_path(type)
-  local limit = opts.max_size - 1
   local cmd = "sed -i '\\|^" .. path .. "$|d' " .. cache_path
-      .. " && sed -i '" .. limit .. ",$d' " .. cache_path
+      .. " && sed -i '" .. opts.max_size .. ",$d' " .. cache_path
       .. " && sed -i '1i" .. path .. "' " .. cache_path
   io.popen(cmd)
 end
@@ -114,6 +113,9 @@ M.setup = function(user_opts)
       end
       opts[k] = user_opts[k]
     end
+  end
+  if opts.max_size < 1 then
+    error('Option max_size must be positive number')
   end
 
   ensure_cache_files()
