@@ -7,6 +7,11 @@ local opts = {
   ignore_regex_list = {}
 }
 
+local expand = function(expr)
+  ---@diagnostic disable-next-line: missing-parameter
+  return vim.fn.expand(expr)
+end
+
 --- Returns the path to cache.
 ---@param type string `mru` or `mrw`
 M.cache_path = function(type)
@@ -16,12 +21,17 @@ M.cache_path = function(type)
   error("type must be 'mru' or 'mrw'")
 end
 
+local is_called_from_autocmd = function()
+  return vim.fn.bufnr() == expand('<abuf>')
+end
+
 local is_ignored = function(path)
   if vim.fn.filereadable(path) == 0 then
     return true
   end
 
-  if vim.tbl_contains(opts.ignore_filetype_list, vim.bo.filetype) then
+  if is_called_from_autocmd() and
+      vim.tbl_contains(opts.ignore_filetype_list, vim.bo.filetype) then
     return true
   end
 
