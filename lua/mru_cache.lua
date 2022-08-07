@@ -64,9 +64,9 @@ M.append = function(path, type)
   end
 
   local cache_path = M.cache_path(type)
-  local cmd = "sed -i '\\|^" .. path .. "$|d' " .. cache_path
-      .. " && sed -i '" .. opts.max_size .. ",$d' " .. cache_path
-      .. " && sed -i '1i" .. path .. "' " .. cache_path
+  local cmd = "sed -i -e '\\|^" .. path .. "$|d' "
+      .. "-e '" .. opts.max_size .. ",$d' "
+      .. "-e '1i" .. path .. "' " .. cache_path
   io.popen(cmd)
 end
 
