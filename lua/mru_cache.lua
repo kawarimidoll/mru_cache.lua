@@ -2,7 +2,7 @@ M = {}
 
 local opts = {
   cache_directory = '~/.cache/nvim/mru_cache',
-  max_size = 20,
+  max_size = 100,
   ignore_filetype_list = {},
   ignore_regex_list = {}
 }
@@ -100,7 +100,7 @@ end
 --- Default options:
 --- {
 ---   cache_directory = '~/.cache/nvim/mru_cache',
----   max_size = 20,
+---   max_size = 100,
 ---   ignore_filetype_list = {},
 ---   ignore_regex_list = {}
 --- }
