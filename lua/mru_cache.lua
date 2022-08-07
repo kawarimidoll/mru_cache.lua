@@ -6,6 +6,12 @@ local opts = {
   ignore_filetype_list = {},
   ignore_regex_list = {}
 }
+local opt_types = {
+  cache_directory = 'string',
+  max_size = 'number',
+  ignore_filetype_list = 'table',
+  ignore_regex_list = 'table'
+}
 
 local expand = function(expr)
   ---@diagnostic disable-next-line: missing-parameter
@@ -84,10 +90,23 @@ local ensure_cache_files = function()
   end
 end
 
+--- Setups mru_cache.
+---
+--- Default options:
+--- {
+---   cache_directory = '~/.cache/nvim/mru_cache',
+---   max_size = 20,
+---   ignore_filetype_list = {},
+---   ignore_regex_list = {}
+--- }
+---@param user_opts? table user options
 M.setup = function(user_opts)
   user_opts = user_opts or {}
   for k, _ in pairs(opts) do
     if user_opts[k] then
+      if type(user_opts[k]) ~= opt_types[k] then
+        error('Option ' .. k .. ' must be ' .. opt_types[k])
+      end
       opts[k] = user_opts[k]
     end
   end
