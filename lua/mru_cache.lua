@@ -60,6 +60,30 @@ M.append = function(path, type)
   io.popen(cmd)
 end
 
+local ensure_cache_files = function()
+  opts.cache_directory = expand(opts.cache_directory)
+
+  if vim.fn.isdirectory(opts.cache_directory) == 0 then
+    if vim.fn.mkdir(opts.cache_directory, 'p') == 0 then
+      error('Failed to make cache_directory: ' .. opts.cache_directory)
+    end
+  end
+
+  local mru_file = M.cache_path('mru')
+  if vim.fn.filewritable(mru_file) == 0 then
+    if vim.fn.writefile({ '' }, mru_file, '') ~= 0 then
+      error('Failed to make mru file: ' .. mru_file)
+    end
+  end
+
+  local mrw_file = M.cache_path('mrw')
+  if vim.fn.filewritable(mrw_file) == 0 then
+    if vim.fn.writefile({ '' }, mrw_file, '') ~= 0 then
+      error('Failed to make mrw file: ' .. mrw_file)
+    end
+  end
+end
+
 M.setup = function(user_opts)
   user_opts = user_opts or {}
   for k, _ in pairs(opts) do
@@ -68,18 +92,7 @@ M.setup = function(user_opts)
     end
   end
 
-  -- ensure cache files
-  if vim.fn.isdirectory(opts.cache_directory) == 0 then
-    vim.fn.mkdir(opts.cache_director, 'p')
-  end
-  if vim.fn.filewritable(M.cache_path('mru')) == 0 then
-    io.popen('echo > ' .. M.cache_path('mru'))
-  end
-  if vim.fn.filewritable(M.cache_path('mrw')) == 0 then
-    io.popen('echo > ' .. M.cache_path('mrw'))
-  end
-
-  vim.pretty_print(opts)
+  ensure_cache_files()
 
   local augroup = 'mru_cache'
   vim.api.nvim_create_augroup(augroup, {})
